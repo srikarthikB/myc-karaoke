@@ -20,44 +20,46 @@ export const SongCard: React.FC<SongCardProps> = ({ song }) => {
   const difficultyColor = 'text-neutral-300';
 
   return (
-    <article className="glass-card group relative border rounded-2xl p-2 flex flex-col justify-between">
+    <article className="song-card glass-card group relative border rounded-2xl p-2 flex flex-col justify-between">
+      {/* Favorite button stays anchored to the card, outside the rotating artwork. */}
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          toggleFavorite(song.id);
+        }}
+        aria-label={favorite ? 'Remove from favorites' : 'Add to favorites'}
+        className="glass-control absolute top-2 right-2 p-1.5 rounded-lg text-white active:scale-90 z-20"
+      >
+        <Heart
+          className={`w-4 h-4 transition-colors ${
+            favorite ? 'fill-amber-400 text-amber-400' : 'text-neutral-300 hover:text-white'
+          }`}
+        />
+      </button>
       <div>
         {/* Top media container & quick actions */}
-        <div className="relative aspect-square w-3/4 mx-auto rounded-xl overflow-hidden bg-black/40 mb-2 flex items-center justify-center">
-          <SongArtwork song={song} size="lg" className="w-full h-full" />
-
-          {/* Favorite button */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              toggleFavorite(song.id);
-            }}
-            aria-label={favorite ? 'Remove from favorites' : 'Add to favorites'}
-            className="glass-control absolute top-2 right-2 p-1.5 rounded-lg text-white active:scale-90 z-20"
-          >
-            <Heart
-              className={`w-4 h-4 transition-colors ${
-                favorite ? 'fill-amber-400 text-amber-400' : 'text-neutral-300 hover:text-white'
-              }`}
-            />
-          </button>
-
-          {/* Quick perform overlay button on hover */}
-          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2 pointer-events-none group-hover:pointer-events-auto z-10">
-            <button
-              onClick={() => selectSongForStage(song)}
-              className="glass-primary glass-overlay-primary px-3 py-1.5 bg-amber-400 hover:bg-amber-300 text-black font-semibold text-xs rounded-lg shadow-lg flex items-center gap-1.5 transform translate-y-1 group-hover:translate-y-0 active:scale-95"
-            >
-              <Mic className="w-3.5 h-3.5 fill-black" />
-              <span>Sing Now</span>
-            </button>
-            <button
-              onClick={() => addToQueue(song)}
-              className="glass-control glass-overlay-control p-1.5 text-white text-xs rounded-lg shadow-lg flex items-center gap-1 transform translate-y-1 group-hover:translate-y-0 active:scale-95"
-              title="Add to queue"
-            >
-              <Plus className="w-4 h-4" />
-            </button>
+        <div className="relative aspect-square w-3/4 mx-auto mb-2">
+          <div className="absolute inset-0 rounded-full overflow-hidden bg-black/40">
+            <div className="song-card-record-spin w-full h-full overflow-hidden rounded-full">
+              <SongArtwork song={song} size="lg" className="w-full h-full rounded-full" showGenreBadge={false} />
+            </div>
+            {/* Quick perform overlay button on hover */}
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2 pointer-events-none group-hover:pointer-events-auto z-10">
+              <button
+                onClick={() => selectSongForStage(song)}
+                className="glass-primary glass-overlay-primary px-3 py-1.5 bg-amber-400 hover:bg-amber-300 text-black font-semibold text-xs rounded-lg shadow-lg flex items-center gap-1.5 transform translate-y-1 group-hover:translate-y-0 active:scale-95"
+              >
+                <Mic className="w-3.5 h-3.5 fill-black" />
+                <span>Sing Now</span>
+              </button>
+              <button
+                onClick={() => addToQueue(song)}
+                className="glass-control glass-overlay-control p-1.5 text-white text-xs rounded-lg shadow-lg flex items-center gap-1 transform translate-y-1 group-hover:translate-y-0 active:scale-95"
+                title="Add to queue"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -76,7 +78,7 @@ export const SongCard: React.FC<SongCardProps> = ({ song }) => {
 
         {/* Unboxed Metadata Line (Frontend Constitution: No static pill boxes) */}
         <div className="mt-1.5 flex items-center gap-2 text-xs text-neutral-400">
-          <span>{song.genre}</span>
+          <span className="min-w-0 truncate" title={song.genre}>{song.genre}</span>
           <span aria-hidden="true" className="text-neutral-600">·</span>
           <span>{song.year}</span>
         </div>

@@ -5,24 +5,28 @@
 
 import React, { useState } from 'react';
 import { Song } from '../../types/song';
+import { getAlbumCoverPath } from '../../utils/albumArtwork';
 import { ArtworkFallback } from './ArtworkFallback';
 
 interface SongArtworkProps {
   song: Song;
   size?: 'sm' | 'md' | 'lg' | 'hero';
   className?: string;
+  showGenreBadge?: boolean;
 }
 
 export const SongArtwork: React.FC<SongArtworkProps> = ({
   song,
   size = 'md',
   className = '',
+  showGenreBadge = true,
 }) => {
   const [imgError, setImgError] = useState(false);
+  const artworkPath = getAlbumCoverPath(song.album);
 
   // If no artwork provided or loading failed, render procedural fallback
-  if (!song.artworkPath || imgError) {
-    return <ArtworkFallback song={song} size={size} className={className} />;
+  if (!artworkPath || imgError) {
+    return <ArtworkFallback song={song} size={size} className={className} showGenreBadge={showGenreBadge} />;
   }
 
   const sizeClasses = {
@@ -35,9 +39,8 @@ export const SongArtwork: React.FC<SongArtworkProps> = ({
   return (
     <div className={`relative overflow-hidden rounded-xl border border-white/[0.12] shrink-0 ${sizeClasses} ${className}`}>
       <img
-        src={song.artworkPath}
-        alt={`${song.title} artwork`}
-        referrerPolicy="no-referrer"
+        src={artworkPath}
+        alt={`${song.album} album cover`}
         onError={() => setImgError(true)}
         className="w-full h-full object-cover"
       />

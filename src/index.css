@@ -268,6 +268,33 @@
     box-shadow 220ms ease;
 }
 
+@keyframes song-card-record-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.song-card-record-spin {
+  animation: song-card-record-spin 10s linear infinite;
+  transform-origin: center;
+}
+
+.song-card:hover .song-card-record-spin {
+  animation-play-state: paused;
+}
+
+.song-card-record-spin > * {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .song-card-record-spin {
+    animation: none;
+  }
+}
+
 .glass-row {
   background:
     linear-gradient(100deg, rgba(255, 255, 255, 0.025), transparent 55%),

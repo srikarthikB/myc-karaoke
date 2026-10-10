@@ -11,6 +11,7 @@ interface ArtworkFallbackProps {
   size?: 'sm' | 'md' | 'lg' | 'hero';
   className?: string;
   showVinylGrooves?: boolean;
+  showGenreBadge?: boolean;
 }
 
 // Curated palettes for boutique music identity (deep tones, high-contrast accents)
@@ -52,6 +53,7 @@ export const ArtworkFallback: React.FC<ArtworkFallbackProps> = ({
   size = 'md',
   className = '',
   showVinylGrooves = true,
+  showGenreBadge = true,
 }) => {
   // Deterministic palette pick based on song ID or title characters
   const palette = useMemo(() => {
@@ -127,7 +129,7 @@ export const ArtworkFallback: React.FC<ArtworkFallbackProps> = ({
       </div>
 
       {/* Subtle corner badge for genre if large size */}
-      {(size === 'lg' || size === 'hero') && (
+      {showGenreBadge && (size === 'lg' || size === 'hero') && (
         <div className="absolute bottom-3 left-3 right-3 text-center pointer-events-none z-10">
           <p className="text-[11px] font-medium text-white/70 uppercase tracking-widest truncate">
             {song.genre}
