@@ -49,7 +49,11 @@ const AppContent: React.FC = () => {
       <div className="relative z-10 flex min-h-screen flex-col">
         <AppHeader />
 
-        <main className={`flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 ${activeScreen === 'player' ? 'pb-6' : 'pb-28'}`}>
+        <main className={`flex-1 w-full mx-auto py-4 sm:py-6 ${
+          activeScreen === 'library'
+            ? 'max-w-[1600px] px-3 sm:px-4 lg:px-6'
+            : 'max-w-7xl px-4 sm:px-6 lg:px-8'
+        } ${activeScreen === 'player' ? 'pb-6' : 'pb-28'}`}>
           {activeScreen === 'library' && <SongLibrary />}
           {activeScreen === 'player' && <KaraokeStage />}
           {activeScreen === 'queue' && <QueueView />}

@@ -20,7 +20,7 @@ export interface Song {
   tags: string[];
   audioPath: string; // relative to /public e.g. "/audio/track_01.mp3"
   lyricsPath: string; // relative to /public e.g. "/lyrics/track_01.lrc"
-  artworkPath: string | null; // null triggers procedural artwork fallback
+  artworkPath?: string | null; // omitted or null triggers procedural artwork fallback
   hasBackingVocals?: boolean;
   notes?: string;
 }
