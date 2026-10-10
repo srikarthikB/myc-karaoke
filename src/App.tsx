@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import MicroSlats from '../components/MicroSlats';
 import { PlayerProvider, usePlayer } from './context/PlayerContext';
 import { AppHeader } from './components/layout/AppHeader';
 import { PlayerBar } from './components/layout/PlayerBar';
@@ -16,22 +17,47 @@ const AppContent: React.FC = () => {
   const { activeScreen } = usePlayer();
 
   return (
-    <div className="min-h-screen bg-[#0b0d12] text-[#f1f3f7] flex flex-col selection:bg-amber-400 selection:text-black">
-      {/* Top Bar Contract (Wordmark - Nav Links - Primary CTA) */}
-      <AppHeader />
+    <div className="relative isolate min-h-screen flex flex-col bg-[#090909] text-[#F5F5F5] selection:bg-amber-400 selection:text-black">
+      {/* Animated background */}
+      <div className="fixed inset-0 -z-10">
+        <MicroSlats
+          preset="swell"
+          color="#3A3A3A"
+          glintColor="#F5F5F5"
+          backgroundColor="#000000"
+          slatWidth={10}
+          slatHeight={25}
+          gap={3}
+          roundness={0.75}
+          stretch={0}
+          speed={0.6}
+          scale={1.5}
+          direction={250}
+          chop={0.55}
+          glint={0.7}
+          contrast={1.25}
+          perspective={0.55}
+          fog={0.55}
+          interactive={true}
+          cursorStrength={1}
+          cursorSize={40}
+          trail={1.4}
+          style={{}}
+        />
+      </div>
 
-      {/* Main Viewport */}
-      <main className={`flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 ${activeScreen === 'player' ? 'pb-6' : 'pb-28'}`}>
-        {activeScreen === 'library' && <SongLibrary />}
-        {activeScreen === 'player' && <KaraokeStage />}
-        {activeScreen === 'queue' && <QueueView />}
-      </main>
+      <div className="relative z-10 flex min-h-screen flex-col">
+        <AppHeader />
 
-      {/* Persistent Mini Player Bar across screens */}
-      <PlayerBar />
+        <main className={`flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 ${activeScreen === 'player' ? 'pb-6' : 'pb-28'}`}>
+          {activeScreen === 'library' && <SongLibrary />}
+          {activeScreen === 'player' && <KaraokeStage />}
+          {activeScreen === 'queue' && <QueueView />}
+        </main>
 
-      {/* Local Setup & Instructions Modal */}
-      <LocalSetupModal />
+        <PlayerBar />
+        <LocalSetupModal />
+      </div>
     </div>
   );
 };

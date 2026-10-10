@@ -182,7 +182,7 @@ export const KaraokeStage: React.FC = () => {
 
   if (!currentSong) {
     return (
-      <div className="max-w-md mx-auto my-16 p-8 rounded-2xl bg-[#121622] border border-white/8 text-center space-y-4">
+      <div className="max-w-md mx-auto my-16 p-8 rounded-2xl bg-[#111111] border border-white/[0.12] text-center space-y-4">
         <Music2 className="w-12 h-12 text-amber-400 mx-auto" />
         <h2 className="text-xl font-bold text-white">No song selected</h2>
         <p className="text-sm text-neutral-400">
@@ -203,14 +203,14 @@ export const KaraokeStage: React.FC = () => {
   return (
     <div
       ref={stageContainerRef}
-      className={`relative flex flex-col justify-between bg-[#0b0d13] text-white select-none transition-all duration-300 ${
+      className={`relative flex flex-col justify-between bg-[#090909] text-white select-none transition-all duration-300 ${
         isFullscreen
           ? 'fixed inset-0 z-50 p-6 sm:p-10'
-          : 'rounded-2xl border border-white/10 p-5 sm:p-7 min-h-[580px] h-[calc(100vh-140px)] max-h-[820px]'
+          : 'rounded-2xl border border-white/[0.12] p-5 sm:p-7 min-h-[580px] h-[calc(100vh-140px)] max-h-[820px]'
       }`}
     >
       {/* 1. Song Header (Compact: Artwork, Title, Artist, Duration) */}
-      <header className="flex items-center justify-between gap-4 pb-4 border-b border-white/8 shrink-0">
+      <header className="flex items-center justify-between gap-4 pb-4 border-b border-white/[0.12] shrink-0">
         {/* Left: Back to library & Song Info */}
         <div className="flex items-center gap-3.5 min-w-0">
           <button
@@ -234,7 +234,7 @@ export const KaraokeStage: React.FC = () => {
                 className="text-neutral-400 hover:text-white transition-colors"
                 title={favorite ? 'Favorited' : 'Favorite'}
               >
-                <Heart className={`w-3.5 h-3.5 ${favorite ? 'fill-rose-500 text-rose-500' : ''}`} />
+                <Heart className={`w-3.5 h-3.5 ${favorite ? 'fill-amber-400 text-amber-400' : ''}`} />
               </button>
             </div>
             <div className="flex items-center gap-2 text-xs text-neutral-400">
@@ -254,7 +254,7 @@ export const KaraokeStage: React.FC = () => {
             className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 border ${
               isQueueOpen
                 ? 'bg-amber-400/20 text-amber-300 border-amber-400/30'
-                : 'bg-white/5 text-neutral-300 hover:text-white border-white/10'
+                : 'bg-white/5 text-neutral-300 hover:text-white border-white/[0.12]'
             }`}
             title="Toggle Upcoming Queue"
           >
@@ -286,7 +286,7 @@ export const KaraokeStage: React.FC = () => {
             <p className="text-xs text-neutral-400">Loading synchronized lyrics...</p>
           </div>
         ) : lyrics.length === 0 ? (
-          <div className="text-center max-w-md px-6 py-8 rounded-xl bg-white/[0.02] border border-white/5 space-y-2">
+          <div className="text-center max-w-md px-6 py-8 rounded-xl bg-[#111111] border border-white/[0.12] space-y-2">
             <Music2 className="w-8 h-8 text-neutral-500 mx-auto" />
             <h3 className="text-base font-semibold text-neutral-200">
               No synchronized lyrics added yet
@@ -332,10 +332,10 @@ export const KaraokeStage: React.FC = () => {
         {isQueueOpen && (
           <aside
             aria-label="Upcoming Queue Panel"
-            className="absolute top-0 right-0 bottom-0 w-80 sm:w-96 bg-[#11141e]/98 backdrop-blur-xl border-l border-white/10 p-5 flex flex-col justify-between shadow-2xl z-30 transition-transform duration-200"
+            className="absolute top-0 right-0 bottom-0 w-80 sm:w-96 bg-[#111111]/98 backdrop-blur-xl border-l border-white/[0.12] p-5 flex flex-col justify-between shadow-2xl z-30 transition-transform duration-200"
           >
             <div>
-              <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+              <div className="flex items-center justify-between pb-3 border-b border-white/[0.12] mb-4">
                 <div className="flex items-center gap-2">
                   <ListMusic className="w-4 h-4 text-amber-400" />
                   <h3 className="text-sm font-bold text-white font-display">Upcoming Queue</h3>
@@ -367,7 +367,7 @@ export const KaraokeStage: React.FC = () => {
                   {queue.map((item, idx) => (
                     <div
                       key={item.queueId}
-                      className="group flex items-center justify-between gap-3 p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/5 text-xs"
+                      className="group flex items-center justify-between gap-3 p-2.5 rounded-xl bg-[#1B1B1B] hover:bg-[#242424] border border-white/[0.12] text-xs"
                     >
                       <div className="flex items-center gap-2.5 min-w-0 flex-1">
                         <span className="w-4 text-center font-mono text-neutral-500 tabular-nums">
@@ -396,7 +396,7 @@ export const KaraokeStage: React.FC = () => {
                         </button>
                         <button
                           onClick={() => removeFromQueue(item.queueId)}
-                          className="p-1 text-neutral-500 hover:text-rose-400"
+                          className="p-1 text-neutral-500 hover:text-amber-300"
                           title="Remove"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -408,7 +408,7 @@ export const KaraokeStage: React.FC = () => {
               )}
             </div>
 
-            <div className="pt-3 border-t border-white/10 flex items-center justify-between text-xs">
+            <div className="pt-3 border-t border-white/[0.12] flex items-center justify-between text-xs">
               <button
                 onClick={() => {
                   setIsQueueOpen(false);
@@ -424,7 +424,7 @@ export const KaraokeStage: React.FC = () => {
       </div>
 
       {/* 3. Functional Playback Controls Area */}
-      <footer className="shrink-0 pt-3 border-t border-white/8 space-y-3">
+      <footer className="shrink-0 pt-3 border-t border-white/[0.12] space-y-3">
         {audioError && (
           <div className="flex items-center justify-between gap-2 px-3.5 py-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300">
             <div className="flex items-center gap-2 min-w-0">
@@ -512,7 +512,7 @@ export const KaraokeStage: React.FC = () => {
                 title={isMuted ? 'Unmute' : 'Mute'}
               >
                 {isMuted || volume === 0 ? (
-                  <VolumeX className="w-4 h-4 text-rose-400" />
+                  <VolumeX className="w-4 h-4 text-neutral-400" />
                 ) : (
                   <Volume2 className="w-4 h-4" />
                 )}

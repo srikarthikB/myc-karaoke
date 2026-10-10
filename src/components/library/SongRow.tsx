@@ -18,11 +18,7 @@ export const SongRow: React.FC<SongRowProps> = ({ song, index }) => {
   const { selectSongForStage, addToQueue, toggleFavorite, isFavorite } = usePlayer();
   const favorite = isFavorite(song.id);
 
-  const difficultyColor = {
-    Casual: 'text-emerald-400',
-    Moderate: 'text-amber-400',
-    Demanding: 'text-rose-400',
-  }[song.difficulty];
+  const difficultyColor = 'text-neutral-300';
 
   return (
     <div
@@ -77,7 +73,7 @@ export const SongRow: React.FC<SongRowProps> = ({ song, index }) => {
           className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-white/10 transition-colors"
           title={favorite ? 'Remove favorite' : 'Add favorite'}
         >
-          <Heart className={`w-3.5 h-3.5 ${favorite ? 'fill-rose-500 text-rose-500' : ''}`} />
+          <Heart className={`w-3.5 h-3.5 ${favorite ? 'fill-amber-400 text-amber-400' : ''}`} />
         </button>
 
         {/* Add to queue */}

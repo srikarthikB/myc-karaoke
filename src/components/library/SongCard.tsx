@@ -17,14 +17,10 @@ export const SongCard: React.FC<SongCardProps> = ({ song }) => {
   const { selectSongForStage, addToQueue, toggleFavorite, isFavorite } = usePlayer();
   const favorite = isFavorite(song.id);
 
-  const difficultyColor = {
-    Casual: 'text-emerald-400',
-    Moderate: 'text-amber-400',
-    Demanding: 'text-rose-400',
-  }[song.difficulty];
+  const difficultyColor = 'text-neutral-300';
 
   return (
-    <article className="group relative bg-[#131722] hover:bg-[#181d2c] border border-white/8 hover:border-white/15 rounded-2xl p-4 transition-all duration-200 flex flex-col justify-between shadow-sm">
+    <article className="group relative bg-[#111111] hover:bg-[#1B1B1B] border border-white/[0.12] hover:border-white/[0.12] rounded-2xl p-4 transition-all duration-200 flex flex-col justify-between shadow-sm">
       <div>
         {/* Top media container & quick actions */}
         <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-black/40 mb-3.5 flex items-center justify-center">
@@ -37,11 +33,11 @@ export const SongCard: React.FC<SongCardProps> = ({ song }) => {
               toggleFavorite(song.id);
             }}
             aria-label={favorite ? 'Remove from favorites' : 'Add to favorites'}
-            className="absolute top-2.5 right-2.5 p-2 rounded-lg bg-black/60 hover:bg-black/80 backdrop-blur-md text-white transition-transform active:scale-90 border border-white/10 z-20"
+            className="absolute top-2.5 right-2.5 p-2 rounded-lg bg-black/60 hover:bg-black/80 backdrop-blur-md text-white transition-transform active:scale-90 border border-white/[0.12] z-20"
           >
             <Heart
               className={`w-4 h-4 transition-colors ${
-                favorite ? 'fill-rose-500 text-rose-500' : 'text-neutral-300 hover:text-white'
+                favorite ? 'fill-amber-400 text-amber-400' : 'text-neutral-300 hover:text-white'
               }`}
             />
           </button>
@@ -86,7 +82,7 @@ export const SongCard: React.FC<SongCardProps> = ({ song }) => {
         </div>
 
         {/* Song metrics & difficulty */}
-        <div className="mt-2 flex items-center justify-between text-xs pt-2 border-t border-white/5">
+        <div className="mt-2 flex items-center justify-between text-xs pt-2 border-t border-white/[0.12]">
           <span className={`font-medium ${difficultyColor}`}>
             {song.difficulty}
           </span>
@@ -97,10 +93,10 @@ export const SongCard: React.FC<SongCardProps> = ({ song }) => {
       </div>
 
       {/* Primary bottom action row */}
-      <div className="mt-3.5 pt-3 border-t border-white/8 flex items-center justify-between gap-2">
+      <div className="mt-3.5 pt-3 border-t border-white/[0.12] flex items-center justify-between gap-2">
         <button
           onClick={() => addToQueue(song)}
-          className="flex-1 py-1.5 px-2.5 text-xs font-medium text-neutral-300 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-colors flex items-center justify-center gap-1 border border-white/5"
+          className="flex-1 py-1.5 px-2.5 text-xs font-medium text-neutral-300 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-colors flex items-center justify-center gap-1 border border-white/[0.12]"
         >
           <Plus className="w-3.5 h-3.5" />
           <span>Queue</span>

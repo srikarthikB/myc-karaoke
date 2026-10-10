@@ -79,7 +79,7 @@ export const SongLibrary: React.FC = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by title, artist, or genre..."
-            className="w-full bg-[#131622] border border-white/10 rounded-xl pl-11 pr-10 py-2.5 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400/80 focus:ring-1 focus:ring-amber-400/80 transition-colors shadow-inner"
+            className="w-full bg-[#111111] border border-white/[0.12] rounded-xl pl-11 pr-10 py-2.5 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400/80 focus:ring-1 focus:ring-amber-400/80 transition-colors shadow-inner"
           />
           {searchQuery && (
             <button
@@ -100,11 +100,11 @@ export const SongLibrary: React.FC = () => {
           onClick={() => setOnlyFavorites(!onlyFavorites)}
           className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 border ${
             onlyFavorites
-              ? 'bg-rose-500/15 border-rose-500/40 text-rose-300'
-              : 'bg-white/5 border-white/8 text-neutral-300 hover:text-white'
+              ? 'bg-amber-400/15 border-amber-400/40 text-amber-300'
+              : 'bg-white/5 border-white/[0.12] text-neutral-300 hover:text-white'
           }`}
         >
-          <Heart className={`w-3.5 h-3.5 ${onlyFavorites ? 'fill-rose-400 text-rose-400' : ''}`} />
+          <Heart className={`w-3.5 h-3.5 ${onlyFavorites ? 'fill-amber-400 text-amber-400' : ''}`} />
           <span>Favorites</span>
           {favorites.size > 0 && (
             <span className="ml-0.5 font-mono text-[11px] opacity-80 tabular-nums">
@@ -121,7 +121,7 @@ export const SongLibrary: React.FC = () => {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as SortField)}
-              className="bg-[#131622] border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-neutral-200 focus:outline-none focus:border-amber-400 cursor-pointer"
+              className="bg-[#111111] border border-white/[0.12] rounded-lg px-2.5 py-1.5 text-xs text-neutral-200 focus:outline-none focus:border-amber-400 cursor-pointer"
             >
               <option value="title">Song Title</option>
               <option value="artist">Artist</option>
@@ -132,7 +132,7 @@ export const SongLibrary: React.FC = () => {
           </div>
 
           {/* View Mode Toggle: Grid or Table */}
-          <div className="flex items-center bg-[#141824] p-0.5 rounded-lg border border-white/8">
+          <div className="flex items-center bg-[#1B1B1B] p-0.5 rounded-lg border border-white/[0.12]">
             <button
               onClick={() => setViewMode('grid')}
               className={`p-1.5 rounded-md transition-colors ${
@@ -172,7 +172,7 @@ export const SongLibrary: React.FC = () => {
               className={`px-3 py-1.5 rounded-lg font-medium transition-colors whitespace-nowrap shrink-0 ${
                 isActive
                   ? 'bg-amber-400 text-black shadow-sm font-semibold'
-                  : 'bg-white/5 text-neutral-300 hover:bg-white/10 hover:text-white border border-white/5'
+                  : 'bg-white/5 text-neutral-300 hover:bg-white/10 hover:text-white border border-white/[0.12]'
               }`}
             >
               {genre}
@@ -183,8 +183,8 @@ export const SongLibrary: React.FC = () => {
 
       {/* Content Rendering: Grid vs Table vs Empty State */}
       {filteredSongs.length === 0 ? (
-        <div className="rounded-2xl border border-white/8 bg-[#131622] p-12 text-center">
-          <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-3 text-neutral-400">
+        <div className="rounded-2xl border border-white/[0.12] bg-[#111111] p-12 text-center">
+          <div className="w-12 h-12 rounded-full bg-white/5 border border-white/[0.12] flex items-center justify-center mx-auto mb-3 text-neutral-400">
             <Sparkles className="w-6 h-6" />
           </div>
           <h3 className="text-base font-semibold text-white">No songs found</h3>
@@ -213,7 +213,7 @@ export const SongLibrary: React.FC = () => {
           ))}
         </div>
       ) : (
-        <div className="bg-[#121622] border border-white/8 rounded-2xl overflow-hidden divide-y divide-white/5">
+        <div className="bg-[#111111] border border-white/[0.12] rounded-2xl overflow-hidden divide-y divide-white/[0.12]">
           <div className="hidden md:grid grid-cols-12 gap-4 px-4 py-2.5 text-xs font-medium text-neutral-500 uppercase tracking-wider bg-white/[0.02]">
             <div className="col-span-6 flex items-center gap-3 pl-8">
               <span>Track Title & Artist</span>
@@ -222,7 +222,7 @@ export const SongLibrary: React.FC = () => {
             <div className="col-span-2">Difficulty</div>
             <div className="col-span-2 text-right pr-2">Duration & Action</div>
           </div>
-          <div className="divide-y divide-white/[0.04]">
+          <div className="divide-y divide-white/[0.12]">
             {filteredSongs.map((song, idx) => (
               <SongRow key={song.id} song={song} index={idx} />
             ))}

@@ -22,7 +22,7 @@ export const QueueView: React.FC = () => {
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between pb-4 border-b border-white/8">
+      <div className="flex items-center justify-between pb-4 border-b border-white/[0.12]">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white font-display">
             Party Queue
@@ -37,7 +37,7 @@ export const QueueView: React.FC = () => {
         {queue.length > 0 && (
           <button
             onClick={clearQueue}
-            className="px-3 py-1.5 text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 border border-rose-500/20 rounded-lg transition-colors flex items-center gap-1.5"
+            className="px-3 py-1.5 text-xs text-neutral-300 hover:text-amber-300 hover:bg-amber-400/10 border border-white/[0.12] rounded-lg transition-colors flex items-center gap-1.5"
           >
             <Trash2 className="w-3.5 h-3.5" />
             <span>Clear Queue</span>
@@ -47,7 +47,7 @@ export const QueueView: React.FC = () => {
 
       {/* Currently on stage / loaded */}
       {currentSong && (
-        <div className="rounded-2xl bg-gradient-to-r from-amber-500/15 via-[#1a1e2b] to-[#121622] border border-amber-500/30 p-5">
+        <div className="rounded-2xl bg-gradient-to-r from-amber-500/15 via-[#1B1B1B] to-[#111111] border border-amber-500/30 p-5">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-amber-400">
               <Mic className="w-4 h-4 text-amber-400" />
@@ -90,8 +90,8 @@ export const QueueView: React.FC = () => {
         </h2>
 
         {queue.length === 0 ? (
-          <div className="rounded-2xl border border-white/8 bg-[#131622] p-10 text-center">
-            <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-3 text-neutral-400">
+          <div className="rounded-2xl border border-white/[0.12] bg-[#111111] p-10 text-center">
+            <div className="w-12 h-12 rounded-full bg-white/5 border border-white/[0.12] flex items-center justify-center mx-auto mb-3 text-neutral-400">
               <Music className="w-6 h-6" />
             </div>
             <h3 className="text-base font-semibold text-white">The queue is empty</h3>
@@ -112,7 +112,7 @@ export const QueueView: React.FC = () => {
             {queue.map((item, index) => (
               <div
                 key={item.queueId}
-                className="group flex items-center justify-between gap-4 p-3.5 rounded-xl bg-[#131622] hover:bg-[#181d2a] border border-white/8 transition-colors"
+                className="group flex items-center justify-between gap-4 p-3.5 rounded-xl bg-[#111111] hover:bg-[#1B1B1B] border border-white/[0.12] transition-colors"
               >
                 {/* Position & Artwork */}
                 <div className="flex items-center gap-3.5 min-w-0 flex-1">
@@ -178,7 +178,7 @@ export const QueueView: React.FC = () => {
                   {/* Remove */}
                   <button
                     onClick={() => removeFromQueue(item.queueId)}
-                    className="p-1.5 rounded-lg text-neutral-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                    className="p-1.5 rounded-lg text-neutral-400 hover:text-amber-300 hover:bg-amber-400/10 transition-colors"
                     title="Remove from queue"
                   >
                     <Trash2 className="w-4 h-4" />

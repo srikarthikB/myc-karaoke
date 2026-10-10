@@ -39,7 +39,7 @@ export const PlayerBar: React.FC = () => {
   return (
     <aside
       aria-label="Persistent Mini Player"
-      className="fixed bottom-0 left-0 right-0 z-30 bg-[#0e111a]/95 backdrop-blur-lg border-t border-white/10 px-6 py-3 select-none"
+      className="fixed bottom-0 left-0 right-0 z-30 bg-[#111111]/95 backdrop-blur-lg border-t border-white/[0.12] px-6 py-3 select-none"
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         {/* Track info */}
@@ -55,7 +55,7 @@ export const PlayerBar: React.FC = () => {
                 className="text-neutral-400 hover:text-white transition-colors"
                 title={favorite ? 'Favorited' : 'Favorite'}
               >
-                <Heart className={`w-3.5 h-3.5 ${favorite ? 'fill-rose-500 text-rose-500' : ''}`} />
+                <Heart className={`w-3.5 h-3.5 ${favorite ? 'fill-amber-400 text-amber-400' : ''}`} />
               </button>
             </div>
             <p className="text-xs text-neutral-400 truncate">
@@ -106,7 +106,7 @@ export const PlayerBar: React.FC = () => {
             className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 border ${
               activeScreen === 'queue'
                 ? 'bg-white/10 text-white border-white/20'
-                : 'bg-white/5 text-neutral-300 hover:text-white border-white/10'
+                : 'bg-white/5 text-neutral-300 hover:text-white border-white/[0.12]'
             }`}
           >
             <ListMusic className="w-3.5 h-3.5" />

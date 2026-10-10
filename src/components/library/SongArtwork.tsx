@@ -33,7 +33,7 @@ export const SongArtwork: React.FC<SongArtworkProps> = ({
   }[size];
 
   return (
-    <div className={`relative overflow-hidden rounded-xl border border-white/10 shrink-0 ${sizeClasses} ${className}`}>
+    <div className={`relative overflow-hidden rounded-xl border border-white/[0.12] shrink-0 ${sizeClasses} ${className}`}>
       <img
         src={song.artworkPath}
         alt={`${song.title} artwork`}

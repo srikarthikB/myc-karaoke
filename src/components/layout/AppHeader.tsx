@@ -11,7 +11,7 @@ export const AppHeader: React.FC = () => {
   const { activeScreen, setActiveScreen, queue, setIsSetupModalOpen } = usePlayer();
 
   return (
-    <header className="sticky top-0 z-30 flex items-center justify-between gap-8 px-6 py-3.5 bg-[#0e1118]/90 backdrop-blur-md border-b border-white/10 select-none">
+    <header className="sticky top-0 z-30 flex items-center justify-between gap-8 px-6 py-3.5 bg-[#111111]/90 backdrop-blur-md border-b border-white/[0.12] select-none">
       {/* Zone 1: Single text element wordmark */}
       <div className="flex items-center gap-3 shrink-0">
         <button
