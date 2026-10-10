@@ -1,0 +1,6 @@
+{
+  "name": "myc (my-mic) Karaoke",
+  "description": "Personal, local-first karaoke web app for Windows laptops with searchable song catalogue, queue management, and lyric synchronization.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
