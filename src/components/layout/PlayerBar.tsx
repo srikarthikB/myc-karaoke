@@ -39,7 +39,7 @@ export const PlayerBar: React.FC = () => {
   return (
     <aside
       aria-label="Persistent Mini Player"
-      className="fixed bottom-0 left-0 right-0 z-30 bg-[#111111]/95 backdrop-blur-lg border-t border-white/[0.12] px-6 py-3 select-none"
+      className="glass-panel fixed bottom-0 left-0 right-0 z-30 border-t border-white/[0.12] px-6 py-3 select-none"
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         {/* Track info */}
@@ -52,7 +52,7 @@ export const PlayerBar: React.FC = () => {
               </h4>
               <button
                 onClick={() => toggleFavorite(currentSong.id)}
-                className="text-neutral-400 hover:text-white transition-colors"
+                className="glass-control rounded-lg p-1 text-neutral-400 hover:text-white"
                 title={favorite ? 'Favorited' : 'Favorite'}
               >
                 <Heart className={`w-3.5 h-3.5 ${favorite ? 'fill-amber-400 text-amber-400' : ''}`} />
@@ -69,7 +69,7 @@ export const PlayerBar: React.FC = () => {
           <button
             onClick={togglePlay}
             aria-label={isPlaying ? 'Pause' : 'Play'}
-            className="w-9 h-9 rounded-full bg-amber-400 hover:bg-amber-300 text-black flex items-center justify-center transition-transform active:scale-95 shadow-sm"
+            className="glass-primary w-9 h-9 rounded-full bg-amber-400 hover:bg-amber-300 text-black flex items-center justify-center active:scale-95 shadow-sm"
           >
             {isPlaying ? (
               <Pause className="w-4 h-4 fill-black" />
@@ -81,7 +81,7 @@ export const PlayerBar: React.FC = () => {
           <button
             onClick={playNext}
             aria-label="Next song"
-            className="p-1.5 text-neutral-400 hover:text-white transition-colors"
+            className="glass-control rounded-lg p-1.5 text-neutral-400 hover:text-white"
             title="Next song"
           >
             <SkipForward className="w-4 h-4" />
@@ -107,7 +107,7 @@ export const PlayerBar: React.FC = () => {
               activeScreen === 'queue'
                 ? 'bg-white/10 text-white border-white/20'
                 : 'bg-white/5 text-neutral-300 hover:text-white border-white/[0.12]'
-            }`}
+            } ${activeScreen === 'queue' ? 'glass-selected' : 'glass-control'}`}
           >
             <ListMusic className="w-3.5 h-3.5" />
             <span>Queue</span>
@@ -120,7 +120,7 @@ export const PlayerBar: React.FC = () => {
 
           <button
             onClick={() => setActiveScreen('player')}
-            className="px-3.5 py-1.5 bg-amber-400 hover:bg-amber-300 text-black font-semibold text-xs rounded-lg transition-colors flex items-center gap-1.5 shadow-sm active:scale-95"
+            className="glass-primary px-3.5 py-1.5 bg-amber-400 hover:bg-amber-300 text-black font-semibold text-xs rounded-lg transition-colors flex items-center gap-1.5 shadow-sm active:scale-95"
           >
             <Mic className="w-3.5 h-3.5 fill-black" />
             <span>Stage</span>

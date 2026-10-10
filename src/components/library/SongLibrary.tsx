@@ -79,12 +79,12 @@ export const SongLibrary: React.FC = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by title, artist, or genre..."
-            className="w-full bg-[#111111] border border-white/[0.12] rounded-xl pl-11 pr-10 py-2.5 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400/80 focus:ring-1 focus:ring-amber-400/80 transition-colors shadow-inner"
+            className="glass-field w-full border rounded-xl pl-11 pr-10 py-2.5 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400/80 focus:ring-1 focus:ring-amber-400/80 transition-colors shadow-inner"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-neutral-400 hover:text-white rounded-md"
+              className="glass-control glass-search-clear absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-neutral-400 hover:text-white rounded-md"
               aria-label="Clear search"
             >
               <X className="w-3.5 h-3.5" />
@@ -98,10 +98,10 @@ export const SongLibrary: React.FC = () => {
         {/* Favorites filter (Left) */}
         <button
           onClick={() => setOnlyFavorites(!onlyFavorites)}
-          className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 border ${
+          className={`glass-control px-3 py-1.5 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 border ${
             onlyFavorites
-              ? 'bg-amber-400/15 border-amber-400/40 text-amber-300'
-              : 'bg-white/5 border-white/[0.12] text-neutral-300 hover:text-white'
+              ? 'glass-selected text-amber-300'
+              : 'text-neutral-300 hover:text-white'
           }`}
         >
           <Heart className={`w-3.5 h-3.5 ${onlyFavorites ? 'fill-amber-400 text-amber-400' : ''}`} />
@@ -121,7 +121,7 @@ export const SongLibrary: React.FC = () => {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as SortField)}
-              className="bg-[#111111] border border-white/[0.12] rounded-lg px-2.5 py-1.5 text-xs text-neutral-200 focus:outline-none focus:border-amber-400 cursor-pointer"
+              className="glass-field border rounded-lg px-2.5 py-1.5 text-xs text-neutral-200 focus:outline-none focus:border-amber-400 cursor-pointer"
             >
               <option value="title">Song Title</option>
               <option value="artist">Artist</option>
@@ -135,7 +135,7 @@ export const SongLibrary: React.FC = () => {
           <div className="flex items-center bg-[#1B1B1B] p-0.5 rounded-lg border border-white/[0.12]">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-1.5 rounded-md transition-colors ${
+              className={`glass-control p-1.5 rounded-md ${
                 viewMode === 'grid'
                   ? 'bg-white/10 text-white shadow-sm'
                   : 'text-neutral-500 hover:text-neutral-300'
@@ -147,7 +147,7 @@ export const SongLibrary: React.FC = () => {
             </button>
             <button
               onClick={() => setViewMode('table')}
-              className={`p-1.5 rounded-md transition-colors ${
+              className={`glass-control p-1.5 rounded-md ${
                 viewMode === 'table'
                   ? 'bg-white/10 text-white shadow-sm'
                   : 'text-neutral-500 hover:text-neutral-300'
@@ -169,10 +169,10 @@ export const SongLibrary: React.FC = () => {
             <button
               key={genre}
               onClick={() => setSelectedGenre(genre)}
-              className={`px-3 py-1.5 rounded-lg font-medium transition-colors whitespace-nowrap shrink-0 ${
+              className={`glass-control px-3 py-1.5 rounded-lg font-medium transition-colors whitespace-nowrap shrink-0 ${
                 isActive
-                  ? 'bg-amber-400 text-black shadow-sm font-semibold'
-                  : 'bg-white/5 text-neutral-300 hover:bg-white/10 hover:text-white border border-white/[0.12]'
+                  ? 'glass-selected text-amber-300 shadow-sm font-semibold'
+                  : 'text-neutral-300 hover:text-white'
               }`}
             >
               {genre}
@@ -200,7 +200,7 @@ export const SongLibrary: React.FC = () => {
                 setSelectedGenre('All Genres');
                 setOnlyFavorites(false);
               }}
-              className="px-4 py-2 text-xs font-semibold text-neutral-200 bg-white/10 hover:bg-white/15 rounded-lg transition-colors"
+              className="glass-control px-4 py-2 text-xs font-semibold text-neutral-200 rounded-lg"
             >
               Reset Filters
             </button>

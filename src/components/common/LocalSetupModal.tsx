@@ -21,7 +21,7 @@ export const LocalSetupModal: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-150">
-      <div className="relative w-full max-w-2xl bg-[#242424] border border-white/[0.12] rounded-2xl shadow-2xl p-6 sm:p-8 space-y-6 max-h-[90vh] overflow-y-auto">
+      <div className="glass-panel relative w-full max-w-2xl border rounded-2xl shadow-2xl p-6 sm:p-8 space-y-6 max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-white/[0.12]">
           <div>
@@ -34,7 +34,7 @@ export const LocalSetupModal: React.FC = () => {
           </div>
           <button
             onClick={() => setIsSetupModalOpen(false)}
-            className="p-1 text-neutral-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors"
+            className="glass-control p-1 text-neutral-400 hover:text-white rounded-lg"
           >
             <X className="w-5 h-5" />
           </button>
@@ -53,7 +53,7 @@ export const LocalSetupModal: React.FC = () => {
             <code>npm install && npm run dev</code>
             <button
               onClick={() => copyToClipboard('npm install && npm run dev', 'cmd')}
-              className="absolute right-3 top-2.5 p-1 rounded hover:bg-white/10 text-neutral-400 hover:text-white"
+              className="glass-control absolute right-3 top-2.5 p-1 rounded text-neutral-400 hover:text-white"
               title="Copy command"
             >
               {copied === 'cmd' ? <Check className="w-4 h-4 text-amber-400" /> : <Copy className="w-4 h-4" />}
@@ -112,7 +112,7 @@ export const LocalSetupModal: React.FC = () => {
         <div className="pt-2 border-t border-white/[0.12] flex items-center justify-end">
           <button
             onClick={() => setIsSetupModalOpen(false)}
-            className="px-5 py-2 text-xs font-semibold text-black bg-amber-400 hover:bg-amber-300 rounded-lg transition-colors"
+            className="glass-primary px-5 py-2 text-xs font-semibold text-black bg-amber-400 hover:bg-amber-300 rounded-lg"
           >
             Got It
           </button>

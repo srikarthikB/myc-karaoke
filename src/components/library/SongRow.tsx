@@ -23,7 +23,7 @@ export const SongRow: React.FC<SongRowProps> = ({ song, index }) => {
   return (
     <div
       onClick={() => selectSongForStage(song)}
-      className="group grid grid-cols-12 items-center gap-4 px-4 py-2.5 rounded-xl hover:bg-white/[0.04] transition-colors cursor-pointer border-b border-white/[0.04] last:border-b-0 text-sm select-none"
+      className="glass-row group grid grid-cols-12 items-center gap-4 px-4 py-2.5 rounded-xl transition-colors cursor-pointer border-b border-white/[0.04] last:border-b-0 text-sm select-none"
     >
       {/* Index & Artwork & Title/Artist (Cols 1-6) */}
       <div className="col-span-12 md:col-span-6 flex items-center gap-3 min-w-0">
@@ -70,7 +70,7 @@ export const SongRow: React.FC<SongRowProps> = ({ song, index }) => {
             e.stopPropagation();
             toggleFavorite(song.id);
           }}
-          className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-white/10 transition-colors"
+          className="glass-control p-1.5 rounded-lg text-neutral-400 hover:text-white"
           title={favorite ? 'Remove favorite' : 'Add favorite'}
         >
           <Heart className={`w-3.5 h-3.5 ${favorite ? 'fill-amber-400 text-amber-400' : ''}`} />
@@ -82,7 +82,7 @@ export const SongRow: React.FC<SongRowProps> = ({ song, index }) => {
             e.stopPropagation();
             addToQueue(song);
           }}
-          className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-white/10 transition-colors"
+          className="glass-control p-1.5 rounded-lg text-neutral-400 hover:text-white"
           title="Add to queue"
         >
           <Plus className="w-3.5 h-3.5" />
@@ -94,7 +94,7 @@ export const SongRow: React.FC<SongRowProps> = ({ song, index }) => {
             e.stopPropagation();
             selectSongForStage(song);
           }}
-          className="p-1.5 rounded-lg bg-amber-400/10 text-amber-300 hover:bg-amber-400/20 transition-colors"
+          className="glass-control glass-selected p-1.5 rounded-lg text-amber-300"
           title="Perform on stage"
         >
           <Mic className="w-3.5 h-3.5" />

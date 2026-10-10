@@ -190,7 +190,7 @@ export const KaraokeStage: React.FC = () => {
         </p>
         <button
           onClick={() => setActiveScreen('library')}
-          className="px-5 py-2 bg-amber-400 hover:bg-amber-300 text-black text-xs font-semibold rounded-lg transition-colors"
+          className="glass-primary px-5 py-2 bg-amber-400 hover:bg-amber-300 text-black text-xs font-semibold rounded-lg"
         >
           Open Song Library
         </button>
@@ -203,7 +203,7 @@ export const KaraokeStage: React.FC = () => {
   return (
     <div
       ref={stageContainerRef}
-      className={`relative flex flex-col justify-between bg-[#090909] text-white select-none transition-all duration-300 ${
+      className={`glass-panel relative flex flex-col justify-between text-white select-none transition-all duration-300 ${
         isFullscreen
           ? 'fixed inset-0 z-50 p-6 sm:p-10'
           : 'rounded-2xl border border-white/[0.12] p-5 sm:p-7 min-h-[580px] h-[calc(100vh-140px)] max-h-[820px]'
@@ -215,7 +215,7 @@ export const KaraokeStage: React.FC = () => {
         <div className="flex items-center gap-3.5 min-w-0">
           <button
             onClick={() => setActiveScreen('library')}
-            className="p-2 rounded-lg text-neutral-400 hover:text-white hover:bg-white/5 transition-colors shrink-0"
+            className="glass-control p-2 rounded-lg text-neutral-400 hover:text-white shrink-0"
             title="Back to Song Library"
             aria-label="Back to Library"
           >
@@ -231,7 +231,7 @@ export const KaraokeStage: React.FC = () => {
               </h2>
               <button
                 onClick={() => toggleFavorite(currentSong.id)}
-                className="text-neutral-400 hover:text-white transition-colors"
+                className="glass-control rounded-lg p-1 text-neutral-400 hover:text-white"
                 title={favorite ? 'Favorited' : 'Favorite'}
               >
                 <Heart className={`w-3.5 h-3.5 ${favorite ? 'fill-amber-400 text-amber-400' : ''}`} />
@@ -251,10 +251,10 @@ export const KaraokeStage: React.FC = () => {
         <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={() => setIsQueueOpen(!isQueueOpen)}
-            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 border ${
+            className={`glass-control px-3 py-1.5 text-xs font-medium rounded-lg flex items-center gap-1.5 border ${
               isQueueOpen
-                ? 'bg-amber-400/20 text-amber-300 border-amber-400/30'
-                : 'bg-white/5 text-neutral-300 hover:text-white border-white/[0.12]'
+                ? 'glass-selected text-amber-300'
+                : 'text-neutral-300 hover:text-white'
             }`}
             title="Toggle Upcoming Queue"
           >
@@ -269,7 +269,7 @@ export const KaraokeStage: React.FC = () => {
 
           <button
             onClick={toggleFullscreen}
-            className="p-2 rounded-lg text-neutral-400 hover:text-white hover:bg-white/5 transition-colors"
+            className="glass-control p-2 rounded-lg text-neutral-400 hover:text-white"
             title={isFullscreen ? 'Exit Fullscreen (F)' : 'Fullscreen Karaoke (F)'}
             aria-label="Toggle Fullscreen"
           >
@@ -286,7 +286,7 @@ export const KaraokeStage: React.FC = () => {
             <p className="text-xs text-neutral-400">Loading synchronized lyrics...</p>
           </div>
         ) : lyrics.length === 0 ? (
-          <div className="text-center max-w-md px-6 py-8 rounded-xl bg-[#111111] border border-white/[0.12] space-y-2">
+          <div className="glass-panel text-center max-w-md px-6 py-8 rounded-xl border space-y-2">
             <Music2 className="w-8 h-8 text-neutral-500 mx-auto" />
             <h3 className="text-base font-semibold text-neutral-200">
               No synchronized lyrics added yet
@@ -332,7 +332,7 @@ export const KaraokeStage: React.FC = () => {
         {isQueueOpen && (
           <aside
             aria-label="Upcoming Queue Panel"
-            className="absolute top-0 right-0 bottom-0 w-80 sm:w-96 bg-[#111111]/98 backdrop-blur-xl border-l border-white/[0.12] p-5 flex flex-col justify-between shadow-2xl z-30 transition-transform duration-200"
+            className="glass-panel absolute top-0 right-0 bottom-0 w-80 sm:w-96 border-l border-white/[0.12] p-5 flex flex-col justify-between shadow-2xl z-30 transition-transform duration-200"
           >
             <div>
               <div className="flex items-center justify-between pb-3 border-b border-white/[0.12] mb-4">
@@ -343,7 +343,7 @@ export const KaraokeStage: React.FC = () => {
                 </div>
                 <button
                   onClick={() => setIsQueueOpen(false)}
-                  className="p-1 rounded-md text-neutral-400 hover:text-white hover:bg-white/10"
+                  className="glass-control p-1 rounded-md text-neutral-400 hover:text-white"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -367,7 +367,7 @@ export const KaraokeStage: React.FC = () => {
                   {queue.map((item, idx) => (
                     <div
                       key={item.queueId}
-                      className="group flex items-center justify-between gap-3 p-2.5 rounded-xl bg-[#1B1B1B] hover:bg-[#242424] border border-white/[0.12] text-xs"
+                      className="glass-card group flex items-center justify-between gap-3 p-2.5 rounded-xl border text-xs"
                     >
                       <div className="flex items-center gap-2.5 min-w-0 flex-1">
                         <span className="w-4 text-center font-mono text-neutral-500 tabular-nums">
@@ -389,14 +389,14 @@ export const KaraokeStage: React.FC = () => {
                             selectSongForStage(item.song, true);
                             removeFromQueue(item.queueId);
                           }}
-                          className="px-2 py-1 bg-amber-400/10 text-amber-300 hover:bg-amber-400/20 rounded font-medium text-[11px]"
+                          className="glass-control glass-selected px-2 py-1 text-amber-300 rounded font-medium text-[11px]"
                           title="Sing now"
                         >
                           Sing
                         </button>
                         <button
                           onClick={() => removeFromQueue(item.queueId)}
-                          className="p-1 text-neutral-500 hover:text-amber-300"
+                          className="glass-control p-1 text-neutral-500 hover:text-amber-300 rounded"
                           title="Remove"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -414,7 +414,7 @@ export const KaraokeStage: React.FC = () => {
                   setIsQueueOpen(false);
                   setActiveScreen('queue');
                 }}
-                className="text-neutral-400 hover:text-white"
+                className="glass-control rounded-lg p-1 text-neutral-400 hover:text-white"
               >
                 Open Full Queue Page →
               </button>
@@ -473,7 +473,7 @@ export const KaraokeStage: React.FC = () => {
             <button
               onClick={playPrevious}
               aria-label="Previous track"
-              className="p-2.5 rounded-full text-neutral-300 hover:text-white hover:bg-white/5 transition-colors active:scale-95"
+              className="glass-control p-2.5 rounded-full text-neutral-300 hover:text-white active:scale-95"
               title="Previous Track (Ctrl + Left)"
             >
               <SkipBack className="w-5 h-5 fill-current" />
@@ -482,7 +482,7 @@ export const KaraokeStage: React.FC = () => {
             <button
               onClick={togglePlay}
               aria-label={isPlaying ? 'Pause' : 'Play'}
-              className="w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-amber-400 hover:bg-amber-300 text-black flex items-center justify-center shadow-lg shadow-amber-400/20 active:scale-95 transition-all"
+              className="glass-primary w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-amber-400 hover:bg-amber-300 text-black flex items-center justify-center shadow-lg shadow-amber-400/20 active:scale-95"
               title={isPlaying ? 'Pause (Space)' : 'Play (Space)'}
             >
               {isPlaying ? (
@@ -495,7 +495,7 @@ export const KaraokeStage: React.FC = () => {
             <button
               onClick={playNext}
               aria-label="Next track"
-              className="p-2.5 rounded-full text-neutral-300 hover:text-white hover:bg-white/5 transition-colors active:scale-95"
+              className="glass-control p-2.5 rounded-full text-neutral-300 hover:text-white active:scale-95"
               title="Next Track (Ctrl + Right)"
             >
               <SkipForward className="w-5 h-5 fill-current" />
@@ -508,7 +508,7 @@ export const KaraokeStage: React.FC = () => {
               <button
                 onClick={toggleMute}
                 aria-label={isMuted ? 'Unmute' : 'Mute'}
-                className="p-1.5 text-neutral-400 hover:text-white transition-colors"
+                className="glass-control rounded-lg p-1.5 text-neutral-400 hover:text-white"
                 title={isMuted ? 'Unmute' : 'Mute'}
               >
                 {isMuted || volume === 0 ? (
