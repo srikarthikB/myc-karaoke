@@ -62,27 +62,67 @@ const PlayerContext = createContext<PlayerContextType | null>(null);
 
 const STORAGE_KEY_FAVORITES = 'myc_favorites_v1';
 const STORAGE_KEY_VIEW_MODE = 'myc_view_mode_v1';
+const STORAGE_KEY_QUEUE = 'myc_queue_v1';
+
+const loadQueue = (songs: Song[]): QueueItem[] => {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY_QUEUE);
+    if (!saved) return [];
+
+    const storedItems: unknown = JSON.parse(saved);
+    if (!Array.isArray(storedItems)) return [];
+
+    const songsById = new Map(songs.map((song) => [song.id, song]));
+    const seenSongIds = new Set<string>();
+    const seenQueueIds = new Set<string>();
+
+    return storedItems.flatMap((item): QueueItem[] => {
+      if (
+        typeof item !== 'object' ||
+        item === null ||
+        !('queueId' in item) ||
+        typeof item.queueId !== 'string' ||
+        item.queueId.trim().length === 0 ||
+        !('songId' in item) ||
+        typeof item.songId !== 'string' ||
+        !('singerName' in item) ||
+        typeof item.singerName !== 'string' ||
+        item.singerName.trim().length === 0 ||
+        !('addedAt' in item) ||
+        typeof item.addedAt !== 'number' ||
+        !Number.isFinite(item.addedAt)
+      ) {
+        return [];
+      }
+
+      const song = songsById.get(item.songId);
+      if (
+        !song ||
+        seenSongIds.has(song.id) ||
+        seenQueueIds.has(item.queueId)
+      ) {
+        return [];
+      }
+
+      seenSongIds.add(song.id);
+      seenQueueIds.add(item.queueId);
+      return [{
+        queueId: item.queueId,
+        song,
+        singerName: item.singerName,
+        addedAt: item.addedAt,
+      }];
+    });
+  } catch {
+    return [];
+  }
+};
 
 export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [songs] = useState<Song[]>(DEFAULT_SONGS);
   const [activeScreen, setActiveScreen] = useState<ActiveScreen>('library');
   const [currentSong, setCurrentSong] = useState<Song | null>(DEFAULT_SONGS[0] || null);
-
-  // Initialize queue with a couple songs for instant testability
-  const [queue, setQueue] = useState<QueueItem[]>([
-    {
-      queueId: 'q-demo-1',
-      song: DEFAULT_SONGS[1],
-      singerName: 'Alex',
-      addedAt: Date.now() - 10000,
-    },
-    {
-      queueId: 'q-demo-2',
-      song: DEFAULT_SONGS[2],
-      singerName: 'Jordan',
-      addedAt: Date.now() - 5000,
-    },
-  ]);
+  const [queue, setQueue] = useState<QueueItem[]>(() => loadQueue(DEFAULT_SONGS));
 
   // Audio engine state
   const [isPlaying, setIsPlaying] = useState(false);
@@ -203,6 +243,20 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
   }, [favorites]);
 
+  useEffect(() => {
+    try {
+      const storedQueue = queue.map(({ queueId, song, singerName, addedAt }) => ({
+        queueId,
+        songId: song.id,
+        singerName,
+        addedAt,
+      }));
+      localStorage.setItem(STORAGE_KEY_QUEUE, JSON.stringify(storedQueue));
+    } catch {
+      // ignore
+    }
+  }, [queue]);
+
   const setViewMode = (mode: 'grid' | 'table') => {
     setViewModeState(mode);
     try {
@@ -239,7 +293,9 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       singerName,
       addedAt: Date.now(),
     };
-    setQueue((prev) => [...prev, newItem]);
+    setQueue((prev) => (
+      prev.some((item) => item.song.id === song.id) ? prev : [...prev, newItem]
+    ));
   };
 
   const removeFromQueue = (queueId: string) => {
@@ -292,15 +348,11 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   };
 
   const playNext = () => {
-    if (queue.length > 0) {
-      const nextItem = queue[0];
-      setQueue((prev) => prev.slice(1));
-      selectSongForStage(nextItem.song, true);
-    } else if (currentSong) {
-      const currentIndex = songs.findIndex((s) => s.id === currentSong.id);
-      const nextIndex = (currentIndex + 1) % songs.length;
-      selectSongForStage(songs[nextIndex], true);
-    }
+    const nextItem = queue[0];
+    if (!nextItem) return;
+
+    setQueue((prev) => prev.slice(1));
+    selectSongForStage(nextItem.song, true);
   };
 
   const playPrevious = () => {

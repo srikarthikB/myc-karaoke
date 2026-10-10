@@ -39,11 +39,11 @@ export const PlayerBar: React.FC = () => {
   return (
     <aside
       aria-label="Persistent Mini Player"
-      className="glass-panel fixed bottom-0 left-0 right-0 z-30 border-t border-white/[0.12] px-6 py-3 select-none"
+      className="glass-panel relative z-30 w-full shrink-0 border-t border-white/[0.12] px-3 py-3 select-none sm:px-6"
     >
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-x-2 gap-y-2 sm:flex-nowrap sm:gap-4">
         {/* Track info */}
-        <div className="flex items-center gap-3.5 min-w-0 flex-1 sm:flex-initial">
+        <div className="flex basis-full items-center gap-3.5 min-w-0 flex-1 sm:flex-initial sm:basis-auto">
           <SongArtwork song={currentSong} size="sm" className="w-11 h-11 shrink-0" />
           <div className="min-w-0">
             <div className="flex items-center gap-2">
@@ -65,7 +65,7 @@ export const PlayerBar: React.FC = () => {
         </div>
 
         {/* Center player controls for mini-bar */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           <button
             onClick={togglePlay}
             aria-label={isPlaying ? 'Pause' : 'Play'}
@@ -100,10 +100,10 @@ export const PlayerBar: React.FC = () => {
         </div>
 
         {/* Right action controls */}
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-1.5 shrink-0 sm:gap-3">
           <button
             onClick={() => setActiveScreen('queue')}
-            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 border ${
+            className={`px-2 py-1.5 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 border sm:px-3 ${
               activeScreen === 'queue'
                 ? 'bg-white/10 text-white border-white/20'
                 : 'bg-white/5 text-neutral-300 hover:text-white border-white/[0.12]'
@@ -120,7 +120,7 @@ export const PlayerBar: React.FC = () => {
 
           <button
             onClick={() => setActiveScreen('player')}
-            className="glass-primary px-3.5 py-1.5 bg-amber-400 hover:bg-amber-300 text-black font-semibold text-xs rounded-lg transition-colors flex items-center gap-1.5 shadow-sm active:scale-95"
+            className="glass-primary px-2.5 py-1.5 bg-amber-400 hover:bg-amber-300 text-black font-semibold text-xs rounded-lg transition-colors flex items-center gap-1.5 shadow-sm active:scale-95 sm:px-3.5"
           >
             <Mic className="w-3.5 h-3.5 fill-black" />
             <span>Stage</span>

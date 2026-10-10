@@ -17,7 +17,7 @@ const AppContent: React.FC = () => {
   const { activeScreen } = usePlayer();
 
   return (
-    <div className="relative isolate min-h-screen flex flex-col bg-[#090909] text-[#F5F5F5] selection:bg-amber-400 selection:text-black">
+    <div className="relative isolate h-dvh overflow-hidden flex flex-col bg-[#090909] text-[#F5F5F5] selection:bg-amber-400 selection:text-black">
       {/* Animated background */}
       <div className="fixed inset-0 -z-10">
         <MicroSlats
@@ -46,18 +46,20 @@ const AppContent: React.FC = () => {
         />
       </div>
 
-      <div className="relative z-10 flex min-h-screen flex-col">
+      <div className="relative z-10 flex h-full min-h-0 flex-col">
         <AppHeader />
 
-        <main className={`flex-1 w-full mx-auto py-4 sm:py-6 ${
-          activeScreen === 'library'
-            ? 'max-w-[1600px] px-3 sm:px-4 lg:px-6'
-            : 'max-w-7xl px-4 sm:px-6 lg:px-8'
-        } ${activeScreen === 'player' ? 'pb-6' : 'pb-28'}`}>
-          {activeScreen === 'library' && <SongLibrary />}
-          {activeScreen === 'player' && <KaraokeStage />}
-          {activeScreen === 'queue' && <QueueView />}
-        </main>
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+          <main className={`w-full mx-auto py-4 sm:py-6 pb-6 ${
+            activeScreen === 'library'
+              ? 'max-w-[1600px] px-3 sm:px-4 lg:px-6'
+              : 'max-w-7xl px-4 sm:px-6 lg:px-8'
+          }`}>
+            {activeScreen === 'library' && <SongLibrary />}
+            {activeScreen === 'player' && <KaraokeStage />}
+            {activeScreen === 'queue' && <QueueView />}
+          </main>
+        </div>
 
         <PlayerBar />
         <LocalSetupModal />

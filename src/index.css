@@ -279,6 +279,20 @@
   transform-origin: center;
 }
 
+.song-card-artwork-button {
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.song-card-artwork-button:hover {
+  transform: scale(1.025);
+  box-shadow: 0 0 18px rgb(245 169 0 / 16%);
+}
+
+.song-card-artwork-button:focus-visible {
+  outline: 2px solid #f5a900;
+  outline-offset: 3px;
+}
+
 .song-card:hover .song-card-record-spin {
   animation-play-state: paused;
 }
@@ -290,8 +304,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .song-card-record-spin {
+  .song-card-record-spin,
+  .song-card-artwork-button {
     animation: none;
+    transition: none;
   }
 }
 

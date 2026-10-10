@@ -39,28 +39,19 @@ export const SongCard: React.FC<SongCardProps> = ({ song }) => {
       <div>
         {/* Top media container & quick actions */}
         <div className="relative aspect-square w-3/4 mx-auto mb-2">
-          <div className="absolute inset-0 rounded-full overflow-hidden bg-black/40">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              selectSongForStage(song);
+            }}
+            aria-label={`Open ${song.title} in Karaoke Stage`}
+            className="song-card-artwork-button absolute inset-0 rounded-full overflow-hidden bg-black/40"
+          >
             <div className="song-card-record-spin w-full h-full overflow-hidden rounded-full">
               <SongArtwork song={song} size="lg" className="w-full h-full rounded-full" showGenreBadge={false} />
             </div>
-            {/* Quick perform overlay button on hover */}
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2 pointer-events-none group-hover:pointer-events-auto z-10">
-              <button
-                onClick={() => selectSongForStage(song)}
-                className="glass-primary glass-overlay-primary px-3 py-1.5 bg-amber-400 hover:bg-amber-300 text-black font-semibold text-xs rounded-lg shadow-lg flex items-center gap-1.5 transform translate-y-1 group-hover:translate-y-0 active:scale-95"
-              >
-                <Mic className="w-3.5 h-3.5 fill-black" />
-                <span>Sing Now</span>
-              </button>
-              <button
-                onClick={() => addToQueue(song)}
-                className="glass-control glass-overlay-control p-1.5 text-white text-xs rounded-lg shadow-lg flex items-center gap-1 transform translate-y-1 group-hover:translate-y-0 active:scale-95"
-                title="Add to queue"
-              >
-                <Plus className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
+          </button>
         </div>
 
         {/* Title & Artist */}
