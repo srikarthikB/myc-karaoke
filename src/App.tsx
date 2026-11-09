@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import MicroSlats from '../components/MicroSlats';
 import { PlayerProvider, usePlayer } from './context/PlayerContext';
 import { AppHeader } from './components/layout/AppHeader';
@@ -14,7 +14,54 @@ import { QueueView } from './components/queue/QueueView';
 import { LocalSetupModal } from './components/common/LocalSetupModal';
 
 const AppContent: React.FC = () => {
-  const { activeScreen } = usePlayer();
+  const {
+    activeScreen,
+    togglePlay,
+    playNext,
+    playPrevious,
+    toggleMute,
+    setVolume,
+    volume,
+  } = usePlayer();
+  const controlsRef = useRef({ togglePlay, playNext, playPrevious, toggleMute, setVolume, volume });
+  controlsRef.current = { togglePlay, playNext, playPrevious, toggleMute, setVolume, volume };
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const target = event.target;
+      if (
+        target instanceof HTMLElement &&
+        (target.isContentEditable || target.closest('input, textarea, select, [contenteditable="true"]'))
+      ) {
+        return;
+      }
+      if (event.ctrlKey || event.altKey || event.metaKey) return;
+
+      const controls = controlsRef.current;
+      if (event.code === 'Space') {
+        event.preventDefault();
+        if (!event.repeat) controls.togglePlay();
+      } else if (event.code === 'ArrowRight') {
+        event.preventDefault();
+        if (!event.repeat) controls.playNext();
+      } else if (event.code === 'ArrowLeft') {
+        event.preventDefault();
+        if (!event.repeat) controls.playPrevious();
+      } else if (event.key.toLowerCase() === 'm') {
+        event.preventDefault();
+        if (!event.repeat) controls.toggleMute();
+      } else if (event.code === 'ArrowUp') {
+        event.preventDefault();
+        controls.setVolume(Math.min(1, controls.volume + 0.05));
+      } else if (event.code === 'ArrowDown') {
+        event.preventDefault();
+        controls.setVolume(Math.max(0, controls.volume - 0.05));
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   return (
     <div className="relative isolate h-dvh overflow-hidden flex flex-col bg-[#090909] text-[#F5F5F5] selection:bg-amber-400 selection:text-black">

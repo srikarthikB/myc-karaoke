@@ -8,7 +8,8 @@ import { usePlayer, SortField } from '../../context/PlayerContext';
 import { AVAILABLE_GENRES } from '../../data/songs';
 import { SongCard } from './SongCard';
 import { SongRow } from './SongRow';
-import { Search, LayoutGrid, List, Sparkles, Heart, Filter, X } from 'lucide-react';
+import { SongArtwork } from './SongArtwork';
+import { Search, LayoutGrid, List, Sparkles, Heart, Filter, X, Disc3, ChevronDown, ChevronRight } from 'lucide-react';
 
 export const SongLibrary: React.FC = () => {
   const {
@@ -25,6 +26,8 @@ export const SongLibrary: React.FC = () => {
   } = usePlayer();
 
   const [onlyFavorites, setOnlyFavorites] = useState(false);
+  const [browseMode, setBrowseMode] = useState<'songs' | 'albums'>('songs');
+  const [expandedAlbum, setExpandedAlbum] = useState<string | null>(null);
 
   // Filter and sort songs
   const filteredSongs = useMemo(() => {
@@ -67,6 +70,24 @@ export const SongLibrary: React.FC = () => {
         return 0;
       });
   }, [songs, searchQuery, selectedGenre, onlyFavorites, favorites, sortBy]);
+
+  const albumGroups = useMemo(() => {
+    const groups = new Map<string, typeof filteredSongs>();
+    filteredSongs.forEach((song) => {
+      const album = song.album.trim() || 'Unknown Album';
+      const group = groups.get(album) ?? [];
+      group.push(song);
+      groups.set(album, group);
+    });
+
+    return Array.from(groups, ([name, groupSongs]) => ({
+      name,
+      songs: groupSongs,
+      artists: Array.from(new Set(groupSongs.map((song) => song.artist))),
+    })).sort((a, b) => a.name.localeCompare(b.name));
+  }, [filteredSongs]);
+
+  const expandedGroup = albumGroups.find((group) => group.name === expandedAlbum);
 
   return (
     <div className="space-y-4 sm:space-y-5">
@@ -134,9 +155,25 @@ export const SongLibrary: React.FC = () => {
           {/* View Mode Toggle: Grid or Table */}
           <div className="flex items-center bg-[#1B1B1B] p-0.5 rounded-lg border border-white/[0.12]">
             <button
-              onClick={() => setViewMode('grid')}
+              onClick={() => setBrowseMode('albums')}
               className={`glass-control p-1.5 rounded-md ${
-                viewMode === 'grid'
+                browseMode === 'albums'
+                  ? 'bg-white/10 text-white shadow-sm'
+                  : 'text-neutral-500 hover:text-neutral-300'
+              }`}
+              title="Browse Albums"
+              aria-label="Browse Albums"
+              aria-pressed={browseMode === 'albums'}
+            >
+              <Disc3 className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={() => {
+                setBrowseMode('songs');
+                setViewMode('grid');
+              }}
+              className={`glass-control p-1.5 rounded-md ${
+                browseMode === 'songs' && viewMode === 'grid'
                   ? 'bg-white/10 text-white shadow-sm'
                   : 'text-neutral-500 hover:text-neutral-300'
               }`}
@@ -146,9 +183,12 @@ export const SongLibrary: React.FC = () => {
               <LayoutGrid className="w-3.5 h-3.5" />
             </button>
             <button
-              onClick={() => setViewMode('table')}
+              onClick={() => {
+                setBrowseMode('songs');
+                setViewMode('table');
+              }}
               className={`glass-control p-1.5 rounded-md ${
-                viewMode === 'table'
+                browseMode === 'songs' && viewMode === 'table'
                   ? 'bg-white/10 text-white shadow-sm'
                   : 'text-neutral-500 hover:text-neutral-300'
               }`}
@@ -205,6 +245,79 @@ export const SongLibrary: React.FC = () => {
               Reset Filters
             </button>
           </div>
+        </div>
+      ) : browseMode === 'albums' ? (
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
+            {albumGroups.map((group) => {
+              const isExpanded = expandedAlbum === group.name;
+              const representative = group.songs[0];
+              return (
+                <button
+                  key={group.name}
+                  type="button"
+                  onClick={() => setExpandedAlbum(isExpanded ? null : group.name)}
+                  aria-expanded={isExpanded}
+                  className={`glass-card flex min-w-0 items-center gap-3 rounded-2xl border p-3 text-left transition-colors hover:border-amber-400/50 ${
+                    isExpanded ? 'border-amber-400/60 bg-amber-400/[0.06]' : ''
+                  }`}
+                >
+                  <SongArtwork
+                    song={representative}
+                    size="md"
+                    className="h-16 w-16 rounded-lg"
+                    showGenreBadge={false}
+                  />
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm font-semibold text-white" title={group.name}>
+                      {group.name}
+                    </span>
+                    <span className="mt-0.5 block truncate text-xs text-neutral-400">
+                      {group.artists.join(', ')}
+                    </span>
+                    <span className="mt-1 block text-xs text-neutral-500">
+                      {group.songs.length} {group.songs.length === 1 ? 'song' : 'songs'}
+                    </span>
+                  </span>
+                  {isExpanded
+                    ? <ChevronDown className="h-4 w-4 shrink-0 text-amber-300" />
+                    : <ChevronRight className="h-4 w-4 shrink-0 text-neutral-500" />}
+                </button>
+              );
+            })}
+          </div>
+
+          {expandedGroup && (
+            <section className="space-y-3 rounded-2xl border border-white/[0.12] bg-[#111111]/90 p-3 sm:p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <h3 className="truncate text-base font-semibold text-white">{expandedGroup.name}</h3>
+                  <p className="text-xs text-neutral-400">
+                    {expandedGroup.artists.join(', ')} · {expandedGroup.songs.length} {expandedGroup.songs.length === 1 ? 'song' : 'songs'}
+                  </p>
+                </div>
+                <SongArtwork
+                  song={expandedGroup.songs[0]}
+                  size="sm"
+                  className="h-10 w-10 rounded-lg"
+                  showGenreBadge={false}
+                />
+              </div>
+              {viewMode === 'grid' ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4">
+                  {expandedGroup.songs.map((song) => (
+                    <SongCard key={song.id} song={song} />
+                  ))}
+                </div>
+              ) : (
+                <div className="overflow-hidden rounded-xl border border-white/[0.12] divide-y divide-white/[0.12]">
+                  {expandedGroup.songs.map((song, index) => (
+                    <SongRow key={song.id} song={song} index={index} />
+                  ))}
+                </div>
+              )}
+            </section>
+          )}
         </div>
       ) : viewMode === 'grid' ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4">

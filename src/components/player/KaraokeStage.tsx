@@ -98,23 +98,16 @@ export const KaraokeStage: React.FC = () => {
     };
   }, []);
 
-  // Keyboard shortcut listener for karaoke performance (Space to toggle play)
+  // Keep the stage-only fullscreen and queue shortcuts.
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't trigger if user is typing in an input
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+      if (
+        e.target instanceof HTMLElement &&
+        (e.target.isContentEditable || e.target.closest('input, textarea, select, [contenteditable="true"]'))
+      ) {
         return;
       }
-      if (e.code === 'Space') {
-        e.preventDefault();
-        togglePlay();
-      } else if (e.code === 'ArrowRight' && (e.ctrlKey || e.metaKey)) {
-        e.preventDefault();
-        playNext();
-      } else if (e.code === 'ArrowLeft' && (e.ctrlKey || e.metaKey)) {
-        e.preventDefault();
-        playPrevious();
-      } else if (e.key === 'f' || e.key === 'F') {
+      if (e.key === 'f' || e.key === 'F') {
         toggleFullscreen();
       } else if (e.key === 'q' || e.key === 'Q') {
         setIsQueueOpen((prev) => !prev);
@@ -123,7 +116,7 @@ export const KaraokeStage: React.FC = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [togglePlay, playNext, playPrevious, toggleFullscreen]);
+  }, [toggleFullscreen]);
 
   // Auto-scroll lyrics smoothly to keep active line centered
   useEffect(() => {
@@ -474,7 +467,7 @@ export const KaraokeStage: React.FC = () => {
               onClick={playPrevious}
               aria-label="Previous track"
               className="glass-control p-2.5 rounded-full text-neutral-300 hover:text-white active:scale-95"
-              title="Previous Track (Ctrl + Left)"
+              title="Previous Track (Left Arrow)"
             >
               <SkipBack className="w-5 h-5 fill-current" />
             </button>
@@ -496,7 +489,7 @@ export const KaraokeStage: React.FC = () => {
               onClick={playNext}
               aria-label="Next track"
               className="glass-control p-2.5 rounded-full text-neutral-300 hover:text-white active:scale-95"
-              title="Next Track (Ctrl + Right)"
+              title="Next Track (Right Arrow)"
             >
               <SkipForward className="w-5 h-5 fill-current" />
             </button>

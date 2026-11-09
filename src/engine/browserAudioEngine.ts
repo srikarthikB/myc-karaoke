@@ -6,6 +6,7 @@
 import { AudioEngineStatus, IAudioEngine } from './audioTypes';
 
 export type AudioEventCallback = (status: AudioEngineStatus) => void;
+export type AudioEndedCallback = () => void;
 
 export function safeEncodeURI(uri: string): string {
   try {
@@ -29,8 +30,11 @@ export class BrowserAudioEngine implements IAudioEngine {
     error: null,
   };
   private listeners: Set<AudioEventCallback> = new Set();
+  private endedListeners: Set<AudioEndedCallback> = new Set();
   private simulatedTimer: number | null = null;
   private isSimulatingTime = false;
+  private loadGeneration = 0;
+  private endedGeneration = -1;
 
   constructor() {
     if (typeof window !== 'undefined') {
@@ -68,9 +72,11 @@ export class BrowserAudioEngine implements IAudioEngine {
     });
 
     this.audio.addEventListener('ended', () => {
+      if (!this.audio?.ended) return;
       this.status.isPlaying = false;
       this.stopSimulation();
       this.notify();
+      this.notifyEnded();
     });
 
     this.audio.addEventListener('error', () => {
@@ -89,13 +95,28 @@ export class BrowserAudioEngine implements IAudioEngine {
     };
   }
 
+  public subscribeEnded(cb: AudioEndedCallback): () => void {
+    this.endedListeners.add(cb);
+    return () => {
+      this.endedListeners.delete(cb);
+    };
+  }
+
   private notify() {
     const s = this.getStatus();
     this.listeners.forEach((cb) => cb(s));
   }
 
+  private notifyEnded() {
+    if (this.endedGeneration === this.loadGeneration) return;
+    this.endedGeneration = this.loadGeneration;
+    this.endedListeners.forEach((cb) => cb());
+  }
+
   public async load(src: string, fallbackDuration = 0): Promise<void> {
     this.stopSimulation();
+    this.isSimulatingTime = false;
+    this.loadGeneration += 1;
     this.currentSrc = src;
     this.status.currentTime = 0;
     this.status.duration = fallbackDuration;
@@ -200,7 +221,12 @@ export class BrowserAudioEngine implements IAudioEngine {
         this.status.currentTime += delta;
         if (this.status.duration > 0 && this.status.currentTime >= this.status.duration) {
           this.status.currentTime = this.status.duration;
-          this.pause();
+          this.status.isPlaying = false;
+          this.isSimulatingTime = false;
+          this.stopSimulation();
+          this.notify();
+          this.notifyEnded();
+          return;
         }
         this.notify();
       }
@@ -221,6 +247,7 @@ export class BrowserAudioEngine implements IAudioEngine {
       this.audio.src = '';
     }
     this.listeners.clear();
+    this.endedListeners.clear();
   }
 }
 

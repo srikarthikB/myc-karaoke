@@ -123,6 +123,9 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [activeScreen, setActiveScreen] = useState<ActiveScreen>('library');
   const [currentSong, setCurrentSong] = useState<Song | null>(DEFAULT_SONGS[0] || null);
   const [queue, setQueue] = useState<QueueItem[]>(() => loadQueue(DEFAULT_SONGS));
+  const queueRef = useRef(queue);
+  queueRef.current = queue;
+  const songLoadRequestRef = useRef(0);
 
   // Audio engine state
   const [isPlaying, setIsPlaying] = useState(false);
@@ -197,31 +200,39 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   // Load song audio and fetch synchronized lyrics whenever currentSong changes
   const loadSongResources = useCallback(async (song: Song, autoPlay = false) => {
+    const requestId = ++songLoadRequestRef.current;
+    setLyricsLoading(true);
+    setLyrics([]);
+
     // 1. Audio load
     setDuration(song.duration);
     setCurrentTime(0);
     await globalAudioEngine.load(song.audioPath, song.duration);
 
+    if (autoPlay) {
+      void globalAudioEngine.play();
+    }
+
     // 2. Lyrics fetch & parse
-    setLyricsLoading(true);
-    setLyrics([]);
     try {
       const res = await fetch(safeEncodeURI(song.lyricsPath));
+      if (requestId !== songLoadRequestRef.current) return;
       if (res.ok) {
         const text = await res.text();
+        if (requestId !== songLoadRequestRef.current) return;
         const parsed = defaultLyricParser.parse(text);
         setLyrics(parsed.lines);
       } else {
         setLyrics([]);
       }
     } catch {
-      setLyrics([]);
+      if (requestId === songLoadRequestRef.current) {
+        setLyrics([]);
+      }
     } finally {
-      setLyricsLoading(false);
-    }
-
-    if (autoPlay) {
-      globalAudioEngine.play();
+      if (requestId === songLoadRequestRef.current) {
+        setLyricsLoading(false);
+      }
     }
   }, []);
 
@@ -280,10 +291,16 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const isFavorite = (songId: string) => favorites.has(songId);
 
-  const selectSongForStage = (song: Song, autoPlay = false) => {
+  const startSong = useCallback((song: Song, autoPlay: boolean, navigateToStage: boolean) => {
     setCurrentSong(song);
     loadSongResources(song, autoPlay);
-    setActiveScreen('player');
+    if (navigateToStage) {
+      setActiveScreen('player');
+    }
+  }, [loadSongResources]);
+
+  const selectSongForStage = (song: Song, autoPlay = false) => {
+    startSong(song, autoPlay, true);
   };
 
   const addToQueue = (song: Song, singerName = 'Guest') => {
@@ -293,13 +310,19 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       singerName,
       addedAt: Date.now(),
     };
-    setQueue((prev) => (
-      prev.some((item) => item.song.id === song.id) ? prev : [...prev, newItem]
-    ));
+    setQueue((prev) => {
+      const next = prev.some((item) => item.song.id === song.id) ? prev : [...prev, newItem];
+      queueRef.current = next;
+      return next;
+    });
   };
 
   const removeFromQueue = (queueId: string) => {
-    setQueue((prev) => prev.filter((item) => item.queueId !== queueId));
+    setQueue((prev) => {
+      const next = prev.filter((item) => item.queueId !== queueId);
+      queueRef.current = next;
+      return next;
+    });
   };
 
   const moveQueueItem = (index: number, direction: 'up' | 'down') => {
@@ -310,11 +333,13 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       const temp = copy[index];
       copy[index] = copy[targetIndex];
       copy[targetIndex] = temp;
+      queueRef.current = copy;
       return copy;
     });
   };
 
   const clearQueue = () => {
+    queueRef.current = [];
     setQueue([]);
   };
 
@@ -347,13 +372,25 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     globalAudioEngine.toggleMute();
   };
 
-  const playNext = () => {
-    const nextItem = queue[0];
+  const advanceQueue = useCallback((navigateToStage = true) => {
+    const nextItem = queueRef.current[0];
     if (!nextItem) return;
 
-    setQueue((prev) => prev.slice(1));
-    selectSongForStage(nextItem.song, true);
-  };
+    queueRef.current = queueRef.current[0]?.queueId === nextItem.queueId
+      ? queueRef.current.slice(1)
+      : queueRef.current;
+    setQueue(queueRef.current);
+    startSong(nextItem.song, true, navigateToStage);
+  }, [startSong]);
+
+  const advanceQueueRef = useRef(advanceQueue);
+  advanceQueueRef.current = advanceQueue;
+
+  useEffect(() => globalAudioEngine.subscribeEnded(() => {
+    advanceQueueRef.current(false);
+  }), []);
+
+  const playNext = () => advanceQueue(true);
 
   const playPrevious = () => {
     if (currentTime > 3) {
