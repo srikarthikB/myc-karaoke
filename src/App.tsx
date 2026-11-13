@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import MicroSlats from '../components/MicroSlats';
 import { PlayerProvider, usePlayer } from './context/PlayerContext';
 import { AppHeader } from './components/layout/AppHeader';
@@ -24,6 +24,7 @@ const AppContent: React.FC = () => {
     volume,
   } = usePlayer();
   const controlsRef = useRef({ togglePlay, playNext, playPrevious, toggleMute, setVolume, volume });
+  const [stageFullscreen, setStageFullscreen] = useState(false);
   controlsRef.current = { togglePlay, playNext, playPrevious, toggleMute, setVolume, volume };
 
   useEffect(() => {
@@ -63,10 +64,16 @@ const AppContent: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  useEffect(() => {
+    const updateFullscreen = () => setStageFullscreen(Boolean(document.fullscreenElement));
+    document.addEventListener('fullscreenchange', updateFullscreen);
+    return () => document.removeEventListener('fullscreenchange', updateFullscreen);
+  }, []);
+
   return (
     <div className="relative isolate h-dvh overflow-hidden flex flex-col bg-[#090909] text-[#F5F5F5] selection:bg-amber-400 selection:text-black">
       {/* Animated background */}
-      <div className="fixed inset-0 -z-10">
+      {!stageFullscreen && <div className="fixed inset-0 -z-10">
         <MicroSlats
           preset="swell"
           color="#3A3A3A"
@@ -91,7 +98,7 @@ const AppContent: React.FC = () => {
           trail={1.4}
           style={{}}
         />
-      </div>
+      </div>}
 
       <div className="relative z-10 flex h-full min-h-0 flex-col">
         <AppHeader />

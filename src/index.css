@@ -187,6 +187,80 @@
   backdrop-filter: blur(14px) saturate(115%);
 }
 
+.karaoke-fullscreen {
+  isolation: isolate;
+  overflow: hidden;
+  background: #08090b;
+  border: 0;
+  border-radius: 0;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+
+.karaoke-fullscreen-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  background: #08090b;
+}
+
+.karaoke-fullscreen-backdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(5, 6, 8, .57), rgba(5, 6, 8, .69));
+}
+
+.karaoke-fullscreen-backdrop img {
+  width: 88vw;
+  height: auto;
+  max-width: 88vw;
+  max-height: 84vh;
+  object-fit: contain;
+  filter: blur(22px) brightness(.66);
+}
+
+.karaoke-fullscreen-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+}
+
+.karaoke-fullscreen-content > header,
+.karaoke-fullscreen-content > footer {
+  background: linear-gradient(135deg, rgba(23, 24, 27, .62), rgba(9, 10, 12, .52));
+  border-color: rgba(255, 255, 255, .2);
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 12px 34px rgba(0,0,0,.2);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+  backdrop-filter: blur(16px) saturate(120%);
+}
+
+.karaoke-fullscreen-content > header { margin-bottom: .75rem; }
+.karaoke-fullscreen-content > footer { margin-top: .75rem; }
+.karaoke-fullscreen-content > div.relative.flex-1 { min-height: 0; }
+.karaoke-fullscreen-content aside,
+.karaoke-fullscreen-content .glass-panel:not(.karaoke-fullscreen) {
+  background: rgba(15, 16, 19, .72);
+  border-color: rgba(255,255,255,.2);
+  -webkit-backdrop-filter: blur(18px) saturate(120%);
+  backdrop-filter: blur(18px) saturate(120%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .karaoke-fullscreen-content * { scroll-behavior: auto !important; }
+}
+
 .glass-header {
   background:
     linear-gradient(105deg, rgba(255, 255, 255, 0.045), transparent 42%),

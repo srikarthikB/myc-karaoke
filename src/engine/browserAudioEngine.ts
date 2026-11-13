@@ -7,6 +7,11 @@ import { AudioEngineStatus, IAudioEngine } from './audioTypes';
 
 export type AudioEventCallback = (status: AudioEngineStatus) => void;
 export type AudioEndedCallback = () => void;
+export interface AudioFrequencyBands {
+  bass: number;
+  mid: number;
+  treble: number;
+}
 
 export function safeEncodeURI(uri: string): string {
   try {
@@ -35,6 +40,10 @@ export class BrowserAudioEngine implements IAudioEngine {
   private isSimulatingTime = false;
   private loadGeneration = 0;
   private endedGeneration = -1;
+  private audioContext: AudioContext | null = null;
+  private analyser: AnalyserNode | null = null;
+  private mediaSource: MediaElementAudioSourceNode | null = null;
+  private frequencyData: Uint8Array<ArrayBuffer> | null = null;
 
   constructor() {
     if (typeof window !== 'undefined') {
@@ -135,6 +144,8 @@ export class BrowserAudioEngine implements IAudioEngine {
     if (!this.audio) return;
 
     try {
+      this.ensureAnalyser();
+      if (this.audioContext?.state === 'suspended') await this.audioContext.resume();
       await this.audio.play();
       this.status.isPlaying = true;
       this.status.error = null;
@@ -146,6 +157,46 @@ export class BrowserAudioEngine implements IAudioEngine {
       this.startSimulation();
       this.notify();
     }
+  }
+
+  private ensureAnalyser() {
+    if (!this.audio || this.mediaSource || typeof AudioContext === 'undefined') return;
+    try {
+      this.audioContext = new AudioContext();
+      this.analyser = this.audioContext.createAnalyser();
+      this.analyser.fftSize = 1024;
+      this.analyser.smoothingTimeConstant = 0.72;
+      this.frequencyData = new Uint8Array(new ArrayBuffer(this.analyser.frequencyBinCount));
+      this.mediaSource = this.audioContext.createMediaElementSource(this.audio);
+      this.mediaSource.connect(this.analyser);
+      this.analyser.connect(this.audioContext.destination);
+    } catch {
+      // Keep playback available if Web Audio analysis is unavailable.
+      this.analyser = null;
+      this.frequencyData = null;
+    }
+  }
+
+  /** Read normalized frequency-band levels from the one active media element. */
+  public getFrequencyBands(): AudioFrequencyBands {
+    if (!this.status.isPlaying || this.isSimulatingTime || !this.analyser || !this.frequencyData) {
+      return { bass: 0, mid: 0, treble: 0 };
+    }
+    this.analyser.getByteFrequencyData(this.frequencyData);
+    const average = (start: number, end: number) => {
+      let sum = 0;
+      for (let i = start; i < end; i++) sum += this.frequencyData![i];
+      const raw = sum / Math.max(1, end - start) / 255;
+      // Calibrate the byte spectrum against a broad music range. The previous
+      // narrow range saturated on ordinary playback, hiding band-to-band changes.
+      const normalized = Math.max(0, Math.min(1, (raw - 0.1) / 0.62));
+      return Math.pow(normalized, 0.85);
+    };
+    return {
+      bass: average(1, 9),
+      mid: average(9, 56),
+      treble: average(56, 190),
+    };
   }
 
   public pause(): void {
@@ -246,6 +297,13 @@ export class BrowserAudioEngine implements IAudioEngine {
       this.audio.pause();
       this.audio.src = '';
     }
+    this.mediaSource?.disconnect();
+    this.analyser?.disconnect();
+    void this.audioContext?.close();
+    this.mediaSource = null;
+    this.analyser = null;
+    this.audioContext = null;
+    this.frequencyData = null;
     this.listeners.clear();
     this.endedListeners.clear();
   }

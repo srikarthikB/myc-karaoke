@@ -6,6 +6,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { usePlayer } from '../../context/PlayerContext';
 import { SongArtwork } from '../library/SongArtwork';
+import { getAlbumCoverPath } from '../../utils/albumArtwork';
+import { AmbientArtworkSlats } from './AmbientArtworkSlats';
 import {
   Play,
   Pause,
@@ -29,6 +31,7 @@ export const KaraokeStage: React.FC = () => {
   const {
     currentSong,
     setActiveScreen,
+    returnFromStage,
     queue,
     removeFromQueue,
     selectSongForStage,
@@ -55,9 +58,13 @@ export const KaraokeStage: React.FC = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isScrubbing, setIsScrubbing] = useState(false);
   const [scrubTime, setScrubTime] = useState(0);
+  const [backgroundArtworkFailed, setBackgroundArtworkFailed] = useState(false);
 
   const stageContainerRef = useRef<HTMLDivElement>(null);
   const lyricScrollContainerRef = useRef<HTMLDivElement>(null);
+  const backgroundArtworkRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => setBackgroundArtworkFailed(false), [currentSong?.album]);
 
   // Format time mm:ss
   const formatTime = (secs: number) => {
@@ -83,8 +90,7 @@ export const KaraokeStage: React.FC = () => {
         setIsFullscreen(false);
       }
     } catch {
-      // Fallback
-      setIsFullscreen((prev) => !prev);
+      // Fullscreen remains controlled by the browser's Fullscreen API state.
     }
   }, []);
 
@@ -109,6 +115,8 @@ export const KaraokeStage: React.FC = () => {
       }
       if (e.key === 'f' || e.key === 'F') {
         toggleFullscreen();
+      } else if (e.key === 'Escape' && document.fullscreenElement) {
+        document.exitFullscreen().catch(() => undefined);
       } else if (e.key === 'q' || e.key === 'Q') {
         setIsQueueOpen((prev) => !prev);
       }
@@ -192,22 +200,34 @@ export const KaraokeStage: React.FC = () => {
   }
 
   const favorite = isFavorite(currentSong.id);
+  const albumCover = getAlbumCoverPath(currentSong.album);
 
   return (
     <div
       ref={stageContainerRef}
       className={`glass-panel relative flex flex-col justify-between text-white select-none transition-all duration-300 ${
         isFullscreen
-          ? 'fixed inset-0 z-50 p-6 sm:p-10'
+          ? 'karaoke-fullscreen fixed inset-0 z-50 p-6 sm:p-10'
           : 'rounded-2xl border border-white/[0.12] p-5 sm:p-7 min-h-[580px] h-[calc(100vh-140px)] max-h-[820px]'
       }`}
     >
+      {isFullscreen && (
+        <>
+          <div className="karaoke-fullscreen-backdrop">
+            {albumCover && !backgroundArtworkFailed && (
+              <img ref={backgroundArtworkRef} src={albumCover} alt="" onError={() => setBackgroundArtworkFailed(true)} />
+            )}
+          </div>
+          <AmbientArtworkSlats artworkRef={backgroundArtworkRef} />
+        </>
+      )}
+      <div className={isFullscreen ? 'karaoke-fullscreen-content' : 'contents'}>
       {/* 1. Song Header (Compact: Artwork, Title, Artist, Duration) */}
       <header className="flex items-center justify-between gap-4 pb-4 border-b border-white/[0.12] shrink-0">
         {/* Left: Back to library & Song Info */}
         <div className="flex items-center gap-3.5 min-w-0">
           <button
-            onClick={() => setActiveScreen('library')}
+            onClick={returnFromStage}
             className="glass-control p-2 rounded-lg text-neutral-400 hover:text-white shrink-0"
             title="Back to Song Library"
             aria-label="Back to Library"
@@ -527,6 +547,7 @@ export const KaraokeStage: React.FC = () => {
           </div>
         </div>
       </footer>
+      </div>
     </div>
   );
 };

@@ -11,11 +11,19 @@ import { globalAudioEngine, safeEncodeURI } from '../engine/browserAudioEngine';
 import { defaultLyricParser } from '../engine/lyricParser';
 
 export type SortField = 'title' | 'artist' | 'duration' | 'year' | 'difficulty';
+export type BrowseMode = 'songs' | 'albums' | 'artists';
+
+export interface SelectedCollection {
+  mode: 'albums' | 'artists';
+  key: string;
+  name: string;
+}
 
 interface PlayerContextType {
   songs: Song[];
   activeScreen: ActiveScreen;
   setActiveScreen: (screen: ActiveScreen) => void;
+  returnFromStage: () => void;
   currentSong: Song | null;
   selectSongForStage: (song: Song, autoPlay?: boolean) => void;
   queue: QueueItem[];
@@ -34,6 +42,12 @@ interface PlayerContextType {
   setSortBy: (sort: SortField) => void;
   viewMode: 'grid' | 'table';
   setViewMode: (mode: 'grid' | 'table') => void;
+  browseMode: BrowseMode;
+  setBrowseMode: (mode: BrowseMode) => void;
+  selectedCollection: SelectedCollection | null;
+  setSelectedCollection: (collection: SelectedCollection | null) => void;
+  onlyFavorites: boolean;
+  setOnlyFavorites: React.Dispatch<React.SetStateAction<boolean>>;
   isQueueDrawerOpen: boolean;
   setIsQueueDrawerOpen: (open: boolean) => void;
   isSetupModalOpen: boolean;
@@ -120,7 +134,17 @@ const loadQueue = (songs: Song[]): QueueItem[] => {
 
 export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [songs] = useState<Song[]>(DEFAULT_SONGS);
-  const [activeScreen, setActiveScreen] = useState<ActiveScreen>('library');
+  const [activeScreen, setActiveScreenState] = useState<ActiveScreen>('library');
+  const previousScreenRef = useRef<ActiveScreen>('library');
+  const setActiveScreen = (screen: ActiveScreen) => {
+    if (screen === 'player' && activeScreen !== 'player') {
+      previousScreenRef.current = activeScreen;
+    }
+    setActiveScreenState(screen);
+  };
+  const returnFromStage = () => {
+    setActiveScreenState(previousScreenRef.current || 'library');
+  };
   const [currentSong, setCurrentSong] = useState<Song | null>(DEFAULT_SONGS[0] || null);
   const [queue, setQueue] = useState<QueueItem[]>(() => loadQueue(DEFAULT_SONGS));
   const queueRef = useRef(queue);
@@ -167,6 +191,9 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedGenre, setSelectedGenre] = useState('All Genres');
   const [sortBy, setSortBy] = useState<SortField>('title');
+  const [browseMode, setBrowseMode] = useState<BrowseMode>('songs');
+  const [selectedCollection, setSelectedCollection] = useState<SelectedCollection | null>(null);
+  const [onlyFavorites, setOnlyFavorites] = useState(false);
   const [isQueueDrawerOpen, setIsQueueDrawerOpen] = useState(false);
   const [isSetupModalOpen, setIsSetupModalOpen] = useState(false);
 
@@ -410,6 +437,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         songs,
         activeScreen,
         setActiveScreen,
+        returnFromStage,
         currentSong,
         selectSongForStage,
         queue,
@@ -428,6 +456,12 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         setSortBy,
         viewMode,
         setViewMode,
+        browseMode,
+        setBrowseMode,
+        selectedCollection,
+        setSelectedCollection,
+        onlyFavorites,
+        setOnlyFavorites,
         isQueueDrawerOpen,
         setIsQueueDrawerOpen,
         isSetupModalOpen,
